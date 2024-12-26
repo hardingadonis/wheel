@@ -1,28 +1,21 @@
-import React from 'react';
 import LuckyWheel from './LuckyWheel';
 
 const App = () => {
 	const prizes = [
-		{ label: 'Voucher 159K', image: '/public/img/voucher159k.png' },
-		{ label: 'Giảm 10%', image: '/public/img/voucher159k.png' },
-		{ label: 'Hộp quà đặc biệt', image: '/public/img/voucher159k.png' },
-		{
-			label: 'Thùng cát & Voucher 600K',
-			image: '/public/img/voucher159k.png',
-		},
-		{
-			label: 'Thùng cát & Voucher 200K',
-			image: '/public/img/voucher159k.png',
-		},
+		{ label: 'Voucher 159K' },
+		{ label: 'Giảm 10%' },
+		{ label: 'Hộp quà đặc biệt' },
+		{ label: 'Thùng cát & Voucher 600K' },
+		{ label: 'Thùng cát & Voucher 200K' },
 	];
 
 	const handleSpinEnd = (prize) => {
-		alert(`Chúc mừng! Bạn đã trúng: ${prize}`);
+		alert(`Chúc mừng! Bạn đã trúng: ${prize.label}`);
 	};
 
 	return (
-		<div className="min-h-screen bg-yellow-100 flex flex-col items-center justify-center">
-			<h1 className="text-3xl font-bold mb-6">Vòng Quay May Mắn</h1>
+		<div className="min-h-screen bg-yellow-100 flex flex-col items-center justify-center p-4">
+			<h1 className="text-3xl font-bold mb-6 text-center">Vòng Quay May Mắn</h1>
 			<LuckyWheel
 				prizes={prizes}
 				onSpinEnd={handleSpinEnd}
