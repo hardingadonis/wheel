@@ -172,57 +172,86 @@ const LuckyWheel = ({ prizes, onSpinEnd, preDeterminedIndex }) => {
 	};
 
 	return (
-		<div className="min-h-screen flex flex-col items-center justify-center bg-yellow-100 p-4">
-			<div className="relative flex flex-col items-center">
+		<div className="flex flex-col items-center justify-center bg-yellow-100 p-4">
+			<div className="flex flex-col items-center md:flex-row space-x-0 md:space-x-8">
 				<canvas
 					ref={canvasRef}
 					width={canvasSize}
 					height={canvasSize}
-					className="max-w-full mb-8"
+					className="max-w-full mb-8 md:mb-0"
 				/>
-				<div className="w-full max-w-sm">
-					<h2 className="text-xl font-bold mb-4 text-center">
+				<div className="w-full max-w-md bg-white p-6 rounded-lg shadow-lg">
+					<h2 className="text-2xl font-bold mb-4 text-center text-gray-800">
 						Thông tin cá nhân
 					</h2>
-					<form onSubmit={handleSubmit}>
+					<form onSubmit={handleSubmit} className="space-y-4">
+						<label
+							htmlFor="name"
+							className="block text-sm font-medium text-gray-700"
+						>
+							Tên bạn là
+						</label>
 						<input
+							id="name"
 							type="text"
 							name="name"
-							placeholder="Tên bạn là"
 							value={userInfo.name}
 							onChange={handleInputChange}
-							className="mb-2 px-4 py-2 border rounded w-full"
+							className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600"
 							required
 						/>
+
+						<label
+							htmlFor="role"
+							className="block text-sm font-medium text-gray-700"
+						>
+							Chọn vai trò
+						</label>
 						<select
+							id="role"
 							name="role"
 							value={userInfo.role}
 							onChange={handleInputChange}
-							className="mb-2 px-4 py-2 border rounded w-full"
+							className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600"
 							required
 						>
 							<option value="">Chọn vai trò</option>
 							<option value="Chủ nuôi">Chủ nuôi</option>
 							<option value="Đại lý">Đại lý</option>
 						</select>
+
+						<label
+							htmlFor="phone"
+							className="block text-sm font-medium text-gray-700"
+						>
+							Số điện thoại
+						</label>
 						<input
+							id="phone"
 							type="text"
 							name="phone"
-							placeholder="Số điện thoại"
 							value={userInfo.phone}
 							onChange={handleInputChange}
-							className="mb-2 px-4 py-2 border rounded w-full"
+							className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600"
 							required
 						/>
+
+						<label
+							htmlFor="location"
+							className="block text-sm font-medium text-gray-700"
+						>
+							Bạn đang sinh sống tại
+						</label>
 						<input
+							id="location"
 							type="text"
 							name="location"
-							placeholder="Bạn đang sinh sống tại"
 							value={userInfo.location}
 							onChange={handleInputChange}
-							className="mb-4 px-4 py-2 border rounded w-full"
+							className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600"
 							required
 						/>
+
 						<button
 							type="submit"
 							disabled={
@@ -232,9 +261,9 @@ const LuckyWheel = ({ prizes, onSpinEnd, preDeterminedIndex }) => {
 								!userInfo.phone ||
 								!userInfo.location
 							}
-							className={`w-full px-6 py-2 text-white ${
+							className={`w-full px-6 py-2 text-white rounded-lg ${
 								isSpinning ? 'bg-gray-400' : 'bg-blue-500 hover:bg-blue-600'
-							} rounded`}
+							}`}
 						>
 							{isSpinning ? 'Đang quay...' : 'Quay Ngay!'}
 						</button>
