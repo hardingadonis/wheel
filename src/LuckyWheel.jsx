@@ -1,8 +1,9 @@
 import React, { useRef, useState, useEffect } from 'react';
 import axios from 'axios';
 
-const LuckyWheel = ({ onSpinEnd, preDeterminedIndex }) => {
+const LuckyWheel = ({ onSpinEnd }) => {
 	const [prizes, setPrizes] = useState([]);
+	const [preDeterminedIndex, setPreDeterminedIndex] = useState(null);
 
 	const canvasRef = useRef(null);
 	const [isSpinning, setIsSpinning] = useState(false);
@@ -180,10 +181,31 @@ const LuckyWheel = ({ onSpinEnd, preDeterminedIndex }) => {
 		return phonePattern.test(phone);
 	};
 
-	const handleSubmit = (e) => {
+	const getPrizeIndex = (reward) => {
+		return prizes.findIndex((prize) => prize === reward);
+	};
+
+	const handleSubmit = async (e) => {
 		e.preventDefault();
 		if (validatePhone(userInfo.phone)) {
-			spinWheel();
+			const response = await axios.post(
+				'https://script.google.com/macros/s/AKfycbyvQGYg3huOiMepRw92aDfLTVx1qi3Eo1IXRumkfmertHM_n6uGEDQb2I2wdBGTsQ-16A/exec',
+				{
+					HoVaTen: userInfo.name,
+					VaiTro: userInfo.role,
+					SoDienThoai: userInfo.phone,
+					DiaChi: userInfo.location,
+				},
+			);
+			const reward = response.data.reward;
+			const prizeIndex = getPrizeIndex(reward);
+			setPreDeterminedIndex(prizeIndex);
+
+			setTimeout(() => {
+				spinWheel();
+			}, 100);
+
+			//spinWheel();
 		} else {
 			alert('Số điện thoại không hợp lệ.');
 		}
