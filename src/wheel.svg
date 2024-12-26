@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="500" height="500" viewBox="0 0 500 500">
+  <circle cx="250" cy="250" r="240" fill="#f9c74f" stroke="#333" stroke-width="5"/>
+  <g>
+    <path d="M250,10 L250,250 L490,250 A240,240 0 0,1 250,10" fill="#f94144"/>
+    <text x="250" y="100" text-anchor="middle" font-size="24" fill="#fff">Voucher 159K</text>
+  </g>
+  <g>
+    <path d="M490,250 A240,240 0 0,1 250,490 L250,250 Z" fill="#f3722c"/>
+    <text x="400" y="400" text-anchor="middle" font-size="24" fill="#fff">Giảm 10%</text>
+  </g>
+  <g>
+    <path d="M250,490 L250,250 L10,250 A240,240 0 0,1 250,490" fill="#90be6d"/>
+    <text x="100" y="400" text-anchor="middle" font-size="24" fill="#fff">Hộp quà đặc biệt</text>
+  </g>
+  <g>
+    <path d="M10,250 A240,240 0 0,1 250,10 L250,250 Z" fill="#43aa8b"/>
+    <text x="100" y="100" text-anchor="middle" font-size="24" fill="#fff">Thùng cát &amp; Voucher 600K</text>
+  </g>
+  <g>
+    <path d="M250,10 L250,250 L10,250 A240,240 0 0,1 250,10" fill="#577590"/>
+    <text x="100" y="100" text-anchor="middle" font-size="24" fill="#fff">Thùng cát &amp; Voucher 200K</text>
+  </g>
+</svg>
