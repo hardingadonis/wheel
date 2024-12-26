@@ -4,11 +4,17 @@ const LuckyWheel = ({ prizes, onSpinEnd, preDeterminedIndex }) => {
 	const canvasRef = useRef(null);
 	const [isSpinning, setIsSpinning] = useState(false);
 	const [currentAngle, setCurrentAngle] = useState(0);
+	const [userInfo, setUserInfo] = useState({
+		name: '',
+		role: '',
+		phone: '',
+		location: '',
+	});
 
 	const canvasSize = 500;
 	const radius = canvasSize / 2;
 
-	// Hàm để wrap text khi chữ quá dài
+	// Function for text wrapping
 	const drawWrappedText = (ctx, text, x, y, maxWidth, lineHeight) => {
 		const words = text.split(' ');
 		let line = '';
@@ -29,13 +35,12 @@ const LuckyWheel = ({ prizes, onSpinEnd, preDeterminedIndex }) => {
 
 		lines.push(line);
 
-		// Vẽ từng dòng text tại vị trí căn chỉnh
 		lines.forEach((line, index) => {
 			ctx.fillText(line.trim(), x, y + index * lineHeight);
 		});
 	};
 
-	// Vẽ vòng quay
+	// Draw the wheel
 	const drawWheel = () => {
 		const canvas = canvasRef.current;
 		const ctx = canvas.getContext('2d');
@@ -47,12 +52,10 @@ const LuckyWheel = ({ prizes, onSpinEnd, preDeterminedIndex }) => {
 		ctx.rotate((currentAngle * Math.PI) / 180);
 		ctx.translate(-radius, -radius);
 
-		// Vẽ các phần của vòng quay
 		prizes.forEach((prize, index) => {
 			const startAngle = arcSize * index;
 			const endAngle = startAngle + arcSize;
 
-			// Tô màu xen kẽ cho các phần
 			ctx.beginPath();
 			ctx.moveTo(radius, radius);
 			ctx.arc(radius, radius, radius, startAngle, endAngle);
@@ -63,18 +66,14 @@ const LuckyWheel = ({ prizes, onSpinEnd, preDeterminedIndex }) => {
 			ctx.lineWidth = 2;
 			ctx.stroke();
 
-			// Vẽ label phần thưởng
 			ctx.save();
 			ctx.translate(radius, radius);
 			ctx.rotate(startAngle + arcSize / 2);
-
-			// Thiết lập font chữ
 			ctx.font = 'bold 14px Arial';
 			ctx.fillStyle = '#000';
 			ctx.textAlign = 'center';
 			ctx.textBaseline = 'middle';
 
-			// Wrap text và căn giữa
 			const textRadius = radius * 0.65;
 			const maxWidth = radius * 0.5;
 			const lineHeight = 16;
@@ -91,29 +90,26 @@ const LuckyWheel = ({ prizes, onSpinEnd, preDeterminedIndex }) => {
 
 		ctx.restore();
 
-		// Vẽ vòng tròn bao quanh
 		ctx.beginPath();
-		ctx.arc(radius, radius, radius - 5, 0, 2 * Math.PI); // Giảm bán kính một chút
-		ctx.lineWidth = 10; // Độ dày đường viền
-		ctx.strokeStyle = '#000'; // Màu sắc
+		ctx.arc(radius, radius, radius - 5, 0, 2 * Math.PI);
+		ctx.lineWidth = 10;
+		ctx.strokeStyle = '#000';
 		ctx.stroke();
 
-		// Vẽ vòng tròn trung tâm
 		ctx.beginPath();
 		ctx.arc(radius, radius, radius * 0.1, 0, 2 * Math.PI);
 		ctx.fillStyle = '#333';
 		ctx.fill();
 	};
 
-	// Vẽ mũi tên cố định
 	const drawArrow = () => {
 		const canvas = canvasRef.current;
 		const ctx = canvas.getContext('2d');
 
 		ctx.beginPath();
-		ctx.moveTo(radius, radius * 0.7); // Đỉnh mũi tên
-		ctx.lineTo(radius - radius * 0.1, radius * 1); // Góc trái mũi tên
-		ctx.lineTo(radius + radius * 0.1, radius * 1); // Góc phải mũi tên
+		ctx.moveTo(radius, radius * 0.7);
+		ctx.lineTo(radius - radius * 0.1, radius * 1);
+		ctx.lineTo(radius + radius * 0.1, radius * 1);
 		ctx.closePath();
 		ctx.fillStyle = '#333';
 		ctx.fill();
@@ -129,7 +125,7 @@ const LuckyWheel = ({ prizes, onSpinEnd, preDeterminedIndex }) => {
 		const arcSize = 360 / prizes.length;
 
 		const targetAngle = currentAngle + 360 * 5 + resultIndex * arcSize;
-		const spinDuration = 4000; // Thời gian quay (ms)
+		const spinDuration = 4000;
 		const startTime = performance.now();
 
 		const animate = (time) => {
@@ -156,25 +152,95 @@ const LuckyWheel = ({ prizes, onSpinEnd, preDeterminedIndex }) => {
 		drawArrow();
 	}, [currentAngle]);
 
+	const handleInputChange = (e) => {
+		const { name, value } = e.target;
+		setUserInfo({ ...userInfo, [name]: value });
+	};
+
+	const validatePhone = (phone) => {
+		const phonePattern = /^[0-9]{10,11}$/;
+		return phonePattern.test(phone);
+	};
+
+	const handleSubmit = (e) => {
+		e.preventDefault();
+		if (validatePhone(userInfo.phone)) {
+			spinWheel();
+		} else {
+			alert('Số điện thoại không hợp lệ.');
+		}
+	};
+
 	return (
-		<div className="flex flex-col items-center">
-			<div className="relative">
+		<div className="min-h-screen flex flex-col items-center justify-center bg-yellow-100 p-4">
+			<div className="relative flex flex-col items-center">
 				<canvas
 					ref={canvasRef}
 					width={canvasSize}
 					height={canvasSize}
-					className="max-w-full"
+					className="max-w-full mb-8"
 				/>
+				<div className="w-full max-w-sm">
+					<h2 className="text-xl font-bold mb-4 text-center">
+						Thông tin cá nhân
+					</h2>
+					<form onSubmit={handleSubmit}>
+						<input
+							type="text"
+							name="name"
+							placeholder="Tên bạn là"
+							value={userInfo.name}
+							onChange={handleInputChange}
+							className="mb-2 px-4 py-2 border rounded w-full"
+							required
+						/>
+						<select
+							name="role"
+							value={userInfo.role}
+							onChange={handleInputChange}
+							className="mb-2 px-4 py-2 border rounded w-full"
+							required
+						>
+							<option value="">Chọn vai trò</option>
+							<option value="Chủ nuôi">Chủ nuôi</option>
+							<option value="Đại lý">Đại lý</option>
+						</select>
+						<input
+							type="text"
+							name="phone"
+							placeholder="Số điện thoại"
+							value={userInfo.phone}
+							onChange={handleInputChange}
+							className="mb-2 px-4 py-2 border rounded w-full"
+							required
+						/>
+						<input
+							type="text"
+							name="location"
+							placeholder="Bạn đang sinh sống tại"
+							value={userInfo.location}
+							onChange={handleInputChange}
+							className="mb-4 px-4 py-2 border rounded w-full"
+							required
+						/>
+						<button
+							type="submit"
+							disabled={
+								isSpinning ||
+								!userInfo.name ||
+								!userInfo.role ||
+								!userInfo.phone ||
+								!userInfo.location
+							}
+							className={`w-full px-6 py-2 text-white ${
+								isSpinning ? 'bg-gray-400' : 'bg-blue-500 hover:bg-blue-600'
+							} rounded`}
+						>
+							{isSpinning ? 'Đang quay...' : 'Quay Ngay!'}
+						</button>
+					</form>
+				</div>
 			</div>
-			<button
-				onClick={spinWheel}
-				disabled={isSpinning}
-				className={`mt-4 px-6 py-2 text-white ${
-					isSpinning ? 'bg-gray-400' : 'bg-blue-500 hover:bg-blue-600'
-				} rounded`}
-			>
-				{isSpinning ? 'Đang quay...' : 'Quay Ngay!'}
-			</button>
 		</div>
 	);
 };

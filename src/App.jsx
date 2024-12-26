@@ -1,3 +1,4 @@
+import React from 'react';
 import LuckyWheel from './LuckyWheel';
 
 const App = () => {
