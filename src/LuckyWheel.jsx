@@ -1,6 +1,9 @@
 import React, { useRef, useState, useEffect } from 'react';
+import axios from 'axios';
 
-const LuckyWheel = ({ prizes, onSpinEnd, preDeterminedIndex }) => {
+const LuckyWheel = ({ onSpinEnd, preDeterminedIndex }) => {
+	const [prizes, setPrizes] = useState([]);
+
 	const canvasRef = useRef(null);
 	const [isSpinning, setIsSpinning] = useState(false);
 	const [currentAngle, setCurrentAngle] = useState(0);
@@ -10,6 +13,21 @@ const LuckyWheel = ({ prizes, onSpinEnd, preDeterminedIndex }) => {
 		phone: '',
 		location: '',
 	});
+
+	useEffect(() => {
+		const fetchPrizes = async () => {
+			try {
+				const response = await axios.get(
+					'https://script.google.com/macros/s/AKfycbypkJAi1axNVYSr_uLD9aJWXwbIv082fdTHD0mI2F5nLFW8Z51YwRqBOniTr5WGEvvxMA/exec',
+				);
+				setPrizes(response.data);
+			} catch (error) {
+				console.error('Error fetching prizes:', error);
+			}
+		};
+
+		fetchPrizes();
+	}, []);
 
 	const canvasSize = 500;
 	const radius = canvasSize / 2;
@@ -77,13 +95,13 @@ const LuckyWheel = ({ prizes, onSpinEnd, preDeterminedIndex }) => {
 			const textRadius = radius * 0.65;
 			const maxWidth = radius * 0.5;
 			const lineHeight = 16;
-			const textLines = prize.label.split(' ');
+			const textLines = prize.split(' ');
 			const totalHeight = lineHeight * (textLines.length - 1);
 			const centerY = -totalHeight / 2;
 
 			ctx.translate(textRadius, 0);
 			ctx.rotate(Math.PI / 2);
-			drawWrappedText(ctx, prize.label, 0, centerY, maxWidth, lineHeight);
+			drawWrappedText(ctx, prize, 0, centerY, maxWidth, lineHeight);
 
 			ctx.restore();
 		});
@@ -150,7 +168,7 @@ const LuckyWheel = ({ prizes, onSpinEnd, preDeterminedIndex }) => {
 	useEffect(() => {
 		drawWheel();
 		drawArrow();
-	}, [currentAngle]);
+	}, [currentAngle, prizes]);
 
 	const handleInputChange = (e) => {
 		const { name, value } = e.target;
