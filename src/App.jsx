@@ -4,7 +4,7 @@ import LuckyWheel from './LuckyWheel';
 
 const App = () => {
 	const handleSpinEnd = (prize) => {
-		alert(`Chúc mừng! Bạn đã trúng: ${prize.label}`);
+		alert(`Chúc mừng! Bạn đã trúng: ${prize}`);
 	};
 
 	return (

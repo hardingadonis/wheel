@@ -68,7 +68,7 @@ const LuckyWheel = ({ onSpinEnd }) => {
 		ctx.clearRect(0, 0, canvasSize, canvasSize);
 		ctx.save();
 		ctx.translate(radius, radius);
-		ctx.rotate((currentAngle * Math.PI) / 180);
+		ctx.rotate(((currentAngle - 90) * Math.PI) / 180);
 		ctx.translate(-radius, -radius);
 
 		prizes.forEach((prize, index) => {
@@ -141,9 +141,14 @@ const LuckyWheel = ({ onSpinEnd }) => {
 
 		const resultIndex =
 			preDeterminedIndex ?? Math.floor(Math.random() * prizes.length);
+		console.log('resultIndex:', preDeterminedIndex);
 		const arcSize = 360 / prizes.length;
 
-		const targetAngle = currentAngle + 360 * 5 + resultIndex * arcSize;
+		const targetAngle =
+			currentAngle +
+			360 * 5 -
+			preDeterminedIndex * arcSize -
+			Math.random() * arcSize;
 		const spinDuration = 4000;
 		const startTime = performance.now();
 
@@ -159,7 +164,7 @@ const LuckyWheel = ({ onSpinEnd }) => {
 			} else {
 				setCurrentAngle(targetAngle % 360);
 				setIsSpinning(false);
-				onSpinEnd(prizes[resultIndex]);
+				onSpinEnd(prizes[preDeterminedIndex]);
 			}
 		};
 
@@ -212,20 +217,21 @@ const LuckyWheel = ({ onSpinEnd }) => {
 
 			const reward = data.reward;
 			const prizeIndex = getPrizeIndex(reward);
-			console.log('Prize Index:', prizeIndex);
 			setPreDeterminedIndex(prizeIndex);
 
 			console.log('Reward:', reward);
-
-			setTimeout(() => {
-				spinWheel();
-			}, 100);
 
 			//spinWheel();
 		} else {
 			alert('Số điện thoại không hợp lệ.');
 		}
 	};
+
+	useEffect(() => {
+		if (preDeterminedIndex !== null) {
+			spinWheel();
+		}
+	}, [preDeterminedIndex]);
 
 	return (
 		<div className="flex flex-col items-center justify-center bg-yellow-100 p-4">
