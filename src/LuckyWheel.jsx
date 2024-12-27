@@ -98,7 +98,7 @@ const LuckyWheel = ({ onSpinEnd }) => {
 			const lineHeight = 16;
 			const textLines = prize.split(' ');
 			const totalHeight = lineHeight * (textLines.length - 1);
-			const centerY = -totalHeight / 2;
+			const centerY = -totalHeight / 10;
 
 			ctx.translate(textRadius, 0);
 			ctx.rotate(Math.PI / 2);
@@ -188,18 +188,34 @@ const LuckyWheel = ({ onSpinEnd }) => {
 	const handleSubmit = async (e) => {
 		e.preventDefault();
 		if (validatePhone(userInfo.phone)) {
-			const response = await axios.post(
-				'https://script.google.com/macros/s/AKfycbyvQGYg3huOiMepRw92aDfLTVx1qi3Eo1IXRumkfmertHM_n6uGEDQb2I2wdBGTsQ-16A/exec',
+			const response = await fetch(
+				'https://script.google.com/macros/s/AKfycbx3jmIXkNQD9Tz_TRIV46Q18pPu2jkEUqeI66JbhZGxks-vnOCpCBOKqIrWDisTnAM2ZQ/exec',
 				{
-					HoVaTen: userInfo.name,
-					VaiTro: userInfo.role,
-					SoDienThoai: userInfo.phone,
-					DiaChi: userInfo.location,
+					method: 'POST',
+					body: JSON.stringify({
+						HoVaTen: userInfo.name,
+						VaiTro: userInfo.role,
+						SoDienThoai: userInfo.phone,
+						DiaChi: userInfo.location,
+					}),
 				},
 			);
-			const reward = response.data.reward;
+
+			const data = await response.json();
+
+			console.log(data);
+
+			if (data.error) {
+				alert('Đã xảy ra lỗi. Vui lòng thử lại sau.');
+				return;
+			}
+
+			const reward = data.reward;
 			const prizeIndex = getPrizeIndex(reward);
+			console.log('Prize Index:', prizeIndex);
 			setPreDeterminedIndex(prizeIndex);
+
+			console.log('Reward:', reward);
 
 			setTimeout(() => {
 				spinWheel();
