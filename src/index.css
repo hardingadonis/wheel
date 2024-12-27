@@ -5,6 +5,7 @@
 body {
 	font-family: Arial, sans-serif;
 	height: 100vh;
+	cursor: url('pet-bowl.png'), auto;
 }
 
 canvas {

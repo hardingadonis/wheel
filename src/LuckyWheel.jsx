@@ -104,7 +104,7 @@ const LuckyWheel = () => {
 			ctx.translate(radius, radius);
 			ctx.rotate(startAngle + arcSize / 2);
 			ctx.font = 'bold 14px Arial';
-			ctx.fillStyle = '#262121';
+			ctx.fillStyle = '#2A004E';
 			ctx.textAlign = 'center';
 			ctx.textBaseline = 'middle';
 
