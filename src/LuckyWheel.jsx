@@ -1,7 +1,8 @@
 import React, { useRef, useState, useEffect } from 'react';
 import axios from 'axios';
+import Swal from 'sweetalert2';
 
-const LuckyWheel = ({ onSpinEnd }) => {
+const LuckyWheel = () => {
 	const [prizes, setPrizes] = useState([]);
 	const [preDeterminedIndex, setPreDeterminedIndex] = useState(null);
 
@@ -14,6 +15,20 @@ const LuckyWheel = ({ onSpinEnd }) => {
 		phone: '',
 		location: '',
 	});
+
+	const onSpinEnd = (reward) => {
+		Swal.fire({
+			icon: 'success',
+			title: 'Chúc mừng!',
+			html: `Bạn đã nhận được phần thưởng: <strong>${reward}</strong><br><br>
+         Vui lòng liên hệ <a href="https://www.facebook.com/profile.php?id=61561138291164" target="_blank" style="color: #007bff; text-decoration: underline;">Fanpage</a> để nhận quà.`,
+		}).then((result) => {
+			if (result.isConfirmed) {
+				// Reload trang web khi người dùng nhấn OK
+				window.location.reload();
+			}
+		});
+	};
 
 	useEffect(() => {
 		const fetchPrizes = async () => {
@@ -79,7 +94,7 @@ const LuckyWheel = ({ onSpinEnd }) => {
 			ctx.moveTo(radius, radius);
 			ctx.arc(radius, radius, radius, startAngle, endAngle);
 			ctx.closePath();
-			ctx.fillStyle = index % 2 === 0 ? '#FFD700' : '#FFA500';
+			ctx.fillStyle = index % 2 === 0 ? '#c2c7e3' : '#a2abd6';
 			ctx.fill();
 			ctx.strokeStyle = '#fff';
 			ctx.lineWidth = 2;
@@ -112,7 +127,7 @@ const LuckyWheel = ({ onSpinEnd }) => {
 		ctx.beginPath();
 		ctx.arc(radius, radius, radius - 5, 0, 2 * Math.PI);
 		ctx.lineWidth = 10;
-		ctx.strokeStyle = '#000';
+		ctx.strokeStyle = '#495baf';
 		ctx.stroke();
 	};
 
@@ -125,12 +140,12 @@ const LuckyWheel = ({ onSpinEnd }) => {
 		ctx.lineTo(radius - radius * 0.1, radius * 1);
 		ctx.lineTo(radius + radius * 0.1, radius * 1);
 		ctx.closePath();
-		ctx.fillStyle = '#333';
+		ctx.fillStyle = '#9099cf';
 		ctx.fill();
 
 		ctx.beginPath();
 		ctx.arc(radius, radius, radius * 0.1, 0, 2 * Math.PI);
-		ctx.fillStyle = 'red';
+		ctx.fillStyle = '#20359e';
 		ctx.fill();
 	};
 
@@ -139,8 +154,6 @@ const LuckyWheel = ({ onSpinEnd }) => {
 
 		setIsSpinning(true);
 
-		const resultIndex =
-			preDeterminedIndex ?? Math.floor(Math.random() * prizes.length);
 		console.log('resultIndex:', preDeterminedIndex);
 		const arcSize = 360 / prizes.length;
 
@@ -208,22 +221,24 @@ const LuckyWheel = ({ onSpinEnd }) => {
 
 			const data = await response.json();
 
-			console.log(data);
-
 			if (data.error) {
-				alert('Đã xảy ra lỗi. Vui lòng thử lại sau.');
+				Swal.fire({
+					icon: 'info',
+					title: 'Bạn đã nhận quà rồi!',
+					text: 'Vui lòng liên hệ fanpage để nhận quà.',
+				});
 				return;
 			}
 
 			const reward = data.reward;
 			const prizeIndex = getPrizeIndex(reward);
 			setPreDeterminedIndex(prizeIndex);
-
-			console.log('Reward:', reward);
-
-			//spinWheel();
 		} else {
-			alert('Số điện thoại không hợp lệ.');
+			Swal.fire({
+				icon: 'error',
+				title: 'Số điện thoại không hợp lệ',
+				text: 'Vui lòng nhập số điện thoại hợp lệ.',
+			});
 		}
 	};
 
