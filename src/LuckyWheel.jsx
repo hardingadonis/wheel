@@ -114,11 +114,6 @@ const LuckyWheel = ({ onSpinEnd }) => {
 		ctx.lineWidth = 10;
 		ctx.strokeStyle = '#000';
 		ctx.stroke();
-
-		ctx.beginPath();
-		ctx.arc(radius, radius, radius * 0.1, 0, 2 * Math.PI);
-		ctx.fillStyle = '#333';
-		ctx.fill();
 	};
 
 	const drawArrow = () => {
@@ -131,6 +126,11 @@ const LuckyWheel = ({ onSpinEnd }) => {
 		ctx.lineTo(radius + radius * 0.1, radius * 1);
 		ctx.closePath();
 		ctx.fillStyle = '#333';
+		ctx.fill();
+
+		ctx.beginPath();
+		ctx.arc(radius, radius, radius * 0.1, 0, 2 * Math.PI);
+		ctx.fillStyle = 'red';
 		ctx.fill();
 	};
 
