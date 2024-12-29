@@ -1,17 +1,39 @@
 import { useEffect, useState } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { Stage, Sprite } from '@pixi/react';
 import { RootState } from './store';
-import { startSpin, stopSpin } from './spinSlice';
+import Swal from 'sweetalert2';
 const WHEEL = '/wheel.png';
 const KIM = '/kim.png';
+
+const getIndexReward = (reward: string | null): number => {
+	switch (reward) {
+		case 'VOUCHER GIẢM 10%':
+			return Math.random() < 0.5 ? 0 : 4;
+
+		case 'VOUCHER MUA HÀNG ĐỒNG GIÁ 159K':
+			return Math.random() < 0.5 ? 2 : 6;
+
+		case '1 THÙNG CÁT + VOUCHER PETSHOP 200K':
+			return Math.random() < 0.5 ? 3 : 5;
+
+		case '1 THÙNG CÁT + VOUCHER PETSHOP 600K':
+			return 1;
+
+		case '1 THÙNG CÁT + 1 SET BABY THREE':
+			return 7;
+		default:
+			return 0;
+	}
+};
 
 const Wheel = () => {
 	const [stageWidth, setStageWidth] = useState(window.innerWidth);
 	const [ratio, setRatio] = useState(1.0);
 	const [angle, setAngle] = useState(0);
-	const isSpin = useSelector((state: RootState) => state.spin.isSpin);
-	const dispatch = useDispatch();
+	const [isSpin, setIsSpin] = useState(false);
+	const reward = useSelector((state: RootState) => state.reward.reward);
+	const [targetAngle, setTargetAngle] = useState(0);
 
 	const updateStageWidth = () => {
 		const isMobile = window.innerWidth <= 768;
@@ -34,27 +56,87 @@ const Wheel = () => {
 
 	useEffect(() => {
 		let animationFrameId: number = 0;
+		let lastTime: number;
+		let speed: number = 600;
+
+		const updateAngle = (time: number) => {
+			if (lastTime == undefined) {
+				lastTime = time;
+			}
+
+			const delta = time - lastTime;
+			lastTime = time;
+
+			setAngle((prevAngle) => {
+				const newAngle = prevAngle + (speed * delta) / 1000;
+				if (targetAngle - newAngle < 500) {
+					if (speed > 20) speed = speed * 0.99;
+				}
+				if (newAngle >= targetAngle) {
+					setAngle(targetAngle);
+					setIsSpin(false);
+					return targetAngle;
+				}
+				return newAngle;
+			});
+
+			if (isSpin) {
+				animationFrameId = requestAnimationFrame(updateAngle);
+			} else {
+				cancelAnimationFrame(animationFrameId);
+			}
+		};
 
 		if (isSpin) {
-			const updateAngle = () => {
-				setAngle((prevAngle) => (prevAngle + 0.2) % 360);
-				animationFrameId = requestAnimationFrame(updateAngle);
-			};
 			animationFrameId = requestAnimationFrame(updateAngle);
-		} else {
-			cancelAnimationFrame(animationFrameId);
 		}
 
 		return () => {
 			cancelAnimationFrame(animationFrameId);
 		};
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [isSpin]);
+
+	useEffect(() => {
+		if (reward == null) return;
+		const index = getIndexReward(reward);
+		const again = Math.ceil(Math.random() * 10) + 5;
+		const snap = Math.floor(Math.random() * (30 - 10 + 1)) + 10;
+
+		const tempAngle = 360 * again + index * 45 + snap;
+		setTargetAngle(tempAngle);
+	}, [reward]);
+
+	useEffect(() => {
+		if (targetAngle === 0) return;
+		setTimeout(() => {
+			setIsSpin(true);
+		}, 100);
+	}, [targetAngle]);
+
+	useEffect(() => {
+		if (isSpin == false && reward != null) {
+			setTimeout(() => {
+				Swal.fire({
+					icon: 'success',
+					title: 'Chúc mừng!',
+					html: `Bạn đã nhận được phần thưởng: <strong>${reward}</strong><br><br>
+			Vui lòng liên hệ <a href="https://www.facebook.com/profile.php?id=61561138291164" target="_blank" style="color: #007bff; text-decoration: underline;">Fanpage</a> để nhận quà.`,
+				}).then((result) => {
+					if (result.isConfirmed) {
+						window.location.reload();
+					}
+				});
+			}, 700);
+		}
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [angle]);
 
 	return (
 		<Stage
 			width={stageWidth}
 			height={stageWidth * 0.78}
-			options={{ backgroundColor: 0x1099bb, backgroundAlpha: 0.8 }}
+			options={{ backgroundAlpha: 0 }}
 		>
 			<Sprite
 				image={WHEEL}
@@ -63,7 +145,7 @@ const Wheel = () => {
 				width={1802 * 0.3 * ratio}
 				height={1738 * 0.3 * ratio}
 				pivot={{ x: 1802 / 2, y: 1738 / 2 }}
-				angle={angle + 22}
+				angle={angle + 25}
 			/>
 			<Sprite
 				image={KIM}
