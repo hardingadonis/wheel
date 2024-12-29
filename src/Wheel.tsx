@@ -3,7 +3,6 @@ import { useSelector, useDispatch } from 'react-redux';
 import { Stage, Sprite } from '@pixi/react';
 import { RootState } from './store';
 import { startSpin, stopSpin } from './spinSlice';
-
 const WHEEL = '/wheel.png';
 const KIM = '/kim.png';
 
