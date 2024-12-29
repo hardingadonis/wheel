@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react';
-import { TextStyle } from 'pixi.js';
-import { Stage, Container, Sprite, Text } from '@pixi/react';
+import { Stage, Sprite } from '@pixi/react';
 
 const WHEEL = '/wheel.png';
 const KIM = '/kim.png';
@@ -32,7 +31,7 @@ const Wheel = () => {
 		<Stage
 			width={stageWidth}
 			height={stageWidth * 0.78}
-			options={{ backgroundColor: 0x1099bb, backgroundAlpha: 0 }}
+			options={{ backgroundColor: 0x1099bb, backgroundAlpha: 0.8 }}
 		>
 			<Sprite
 				image={WHEEL}
@@ -40,7 +39,6 @@ const Wheel = () => {
 				y={(stageWidth * 0.78) / 2}
 				width={1802 * 0.3 * ratio}
 				height={1738 * 0.3 * ratio}
-				angle={-45}
 				pivot={{ x: 1802 / 2, y: 1738 / 2 }}
 			/>
 			<Sprite
