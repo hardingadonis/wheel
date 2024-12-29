@@ -2,7 +2,8 @@ import { useEffect, useState } from 'react';
 import { TextStyle } from 'pixi.js';
 import { Stage, Container, Sprite, Text } from '@pixi/react';
 
-const WHEEL_BACKGROUND = '/wheel-background.png';
+const WHEEL = '/wheel.png';
+const KIM = '/kim.png';
 
 const Wheel = () => {
 	const [stageWidth, setStageWidth] = useState(window.innerWidth);
@@ -27,37 +28,29 @@ const Wheel = () => {
 		};
 	}, []);
 
-	const bunnyUrl = 'https://pixijs.io/pixi-react/img/bunny.png';
-
 	return (
 		<Stage
 			width={stageWidth}
-			height={stageWidth * 0.75}
-			options={{ backgroundColor: 0x1099bb, backgroundAlpha: 0.8 }}
+			height={stageWidth * 0.78}
+			options={{ backgroundColor: 0x1099bb, backgroundAlpha: 0 }}
 		>
-			<Sprite image={WHEEL_BACKGROUND} x={300} y={150} />
-			<Sprite image={bunnyUrl} x={500} y={150} />
-			<Sprite image={bunnyUrl} x={400} y={200} />
-
-			<Container x={200} y={200}>
-				<Text
-					text={ratio.toString()}
-					anchor={0.5}
-					x={220}
-					y={150}
-					style={
-						new TextStyle({
-							align: 'center',
-							fill: '0xffffff',
-							fontSize: 50,
-							letterSpacing: 20,
-							dropShadow: true,
-							dropShadowColor: '#E72264',
-							dropShadowDistance: 6,
-						})
-					}
-				/>
-			</Container>
+			<Sprite
+				image={WHEEL}
+				x={stageWidth / 2}
+				y={(stageWidth * 0.78) / 2}
+				width={1802 * 0.3 * ratio}
+				height={1738 * 0.3 * ratio}
+				angle={-45}
+				pivot={{ x: 1802 / 2, y: 1738 / 2 }}
+			/>
+			<Sprite
+				image={KIM}
+				x={stageWidth / 2}
+				y={(stageWidth * 0.78) / 2}
+				width={952 * 0.65 * ratio}
+				height={832 * 0.65 * ratio}
+				pivot={{ x: 952 / 2, y: 832 / 2 }}
+			/>
 		</Stage>
 	);
 };
