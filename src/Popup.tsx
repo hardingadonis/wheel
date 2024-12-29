@@ -1,5 +1,8 @@
 import React, { useState } from 'react';
 import Swal from 'sweetalert2';
+import { setReward } from './rewardSlice';
+import { useDispatch } from 'react-redux';
+import { Bounce, toast } from 'react-toastify';
 
 interface PopupProps {
 	onClose: () => void;
@@ -10,6 +13,8 @@ const Popup = ({ onClose }: PopupProps) => {
 	const [role, setRole] = useState('Chủ nuôi');
 	const [phone, setPhone] = useState('');
 	const [address, setAddress] = useState('');
+
+	const dispatch = useDispatch();
 
 	const isPhoneValid = (phone: string) => {
 		const phoneRegex = /^0[0-9]{9,10}$/;
@@ -27,6 +32,18 @@ const Popup = ({ onClose }: PopupProps) => {
 			});
 			return;
 		}
+
+		toast.success('Đã gửi thông tin, vui lòng chờ trong giây lát', {
+			position: 'top-right',
+			autoClose: 5000,
+			hideProgressBar: false,
+			closeOnClick: false,
+			pauseOnHover: true,
+			draggable: true,
+			progress: undefined,
+			theme: 'light',
+			transition: Bounce,
+		});
 
 		const response = await fetch(
 			'https://script.google.com/macros/s/AKfycbx3jmIXkNQD9Tz_TRIV46Q18pPu2jkEUqeI66JbhZGxks-vnOCpCBOKqIrWDisTnAM2ZQ/exec',
@@ -46,7 +63,11 @@ const Popup = ({ onClose }: PopupProps) => {
 			Swal.fire({
 				icon: 'info',
 				title: 'Bạn đã nhận quà rồi!',
-				text: 'Vui lòng liên hệ fanpage để nhận quà.',
+				html: `Vui lòng liên hệ <a href="https://www.facebook.com/profile.php?id=61561138291164" target="_blank" style="color: #007bff; text-decoration: underline;">Fanpage</a> để nhận quà.`,
+			}).then((result) => {
+				if (result.isConfirmed) {
+					window.location.reload();
+				}
 			});
 			return;
 		}
@@ -65,6 +86,8 @@ const Popup = ({ onClose }: PopupProps) => {
 				setRole('Chủ nuôi');
 				setPhone('');
 				setAddress('');
+
+				dispatch(setReward(reward));
 
 				onClose();
 			}

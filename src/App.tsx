@@ -1,6 +1,7 @@
 import './App.css';
 import { lazy, Suspense, useState, useEffect } from 'react';
 import Popup from './Popup';
+import { ToastContainer } from 'react-toastify';
 
 const Wheel = lazy(() => import('./Wheel'));
 
@@ -21,6 +22,7 @@ const App = () => {
 			<Suspense>
 				<Wheel />
 			</Suspense>
+			<ToastContainer />
 		</div>
 	);
 };

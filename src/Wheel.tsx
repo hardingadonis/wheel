@@ -63,7 +63,7 @@ const Wheel = () => {
 				width={1802 * 0.3 * ratio}
 				height={1738 * 0.3 * ratio}
 				pivot={{ x: 1802 / 2, y: 1738 / 2 }}
-				rotation={angle}
+				angle={angle + 22}
 			/>
 			<Sprite
 				image={KIM}
