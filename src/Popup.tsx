@@ -74,8 +74,6 @@ const Popup = ({ onClose }: PopupProps) => {
 
 		const reward = data.reward;
 
-		console.info(reward);
-
 		Swal.fire({
 			icon: 'success',
 			title: 'Thành công!',
