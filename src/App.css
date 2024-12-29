@@ -7,3 +7,9 @@ body {
 	background-repeat: no-repeat;
 	background-attachment: fixed;
 }
+
+@media (max-width: 768px) {
+	body {
+		background-image: url('/background-sm.png');
+	}
+}
