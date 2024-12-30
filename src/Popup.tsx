@@ -63,6 +63,21 @@ const Popup = ({ onClose }: PopupProps) => {
 			const data = await response.json();
 
 			if (data.error) {
+				const value = data.error;
+
+				if (value == 'No rewards available') {
+					Swal.fire({
+						icon: 'error',
+						title: 'Rất tiếc 😢',
+						text: 'Đã hết quà rồi!',
+					}).then((result) => {
+						if (result.isConfirmed) {
+							window.location.reload();
+						}
+					});
+					return;
+				}
+
 				Swal.fire({
 					icon: 'info',
 					title: 'Bạn đã nhận quà rồi!',
