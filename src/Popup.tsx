@@ -13,6 +13,7 @@ const Popup = ({ onClose }: PopupProps) => {
 	const [role, setRole] = useState('Chủ nuôi');
 	const [phone, setPhone] = useState('');
 	const [address, setAddress] = useState('');
+	const [isSubmitting, setIsSubmitting] = useState(false);
 
 	const dispatch = useDispatch();
 
@@ -33,6 +34,8 @@ const Popup = ({ onClose }: PopupProps) => {
 			return;
 		}
 
+		setIsSubmitting(true);
+
 		toast.success('Đã gửi thông tin, vui lòng chờ trong giây lát', {
 			position: 'top-right',
 			autoClose: 5000,
@@ -44,52 +47,62 @@ const Popup = ({ onClose }: PopupProps) => {
 			theme: 'light',
 			transition: Bounce,
 		});
+		try {
+			const response = await fetch(
+				'https://script.google.com/macros/s/AKfycbx3jmIXkNQD9Tz_TRIV46Q18pPu2jkEUqeI66JbhZGxks-vnOCpCBOKqIrWDisTnAM2ZQ/exec',
+				{
+					method: 'POST',
+					body: JSON.stringify({
+						HoVaTen: name,
+						VaiTro: role,
+						SoDienThoai: phone,
+						DiaChi: address,
+					}),
+				},
+			);
+			const data = await response.json();
 
-		const response = await fetch(
-			'https://script.google.com/macros/s/AKfycbx3jmIXkNQD9Tz_TRIV46Q18pPu2jkEUqeI66JbhZGxks-vnOCpCBOKqIrWDisTnAM2ZQ/exec',
-			{
-				method: 'POST',
-				body: JSON.stringify({
-					HoVaTen: name,
-					VaiTro: role,
-					SoDienThoai: phone,
-					DiaChi: address,
-				}),
-			},
-		);
-		const data = await response.json();
+			if (data.error) {
+				Swal.fire({
+					icon: 'info',
+					title: 'Bạn đã nhận quà rồi!',
+					html: `Vui lòng liên hệ <a href="https://www.facebook.com/profile.php?id=61561138291164" target="_blank" style="color: #007bff; text-decoration: underline;">Fanpage</a> để nhận quà.`,
+				}).then((result) => {
+					if (result.isConfirmed) {
+						window.location.reload();
+					}
+				});
+				return;
+			}
 
-		if (data.error) {
+			const reward = data.reward;
+
 			Swal.fire({
-				icon: 'info',
-				title: 'Bạn đã nhận quà rồi!',
-				html: `Vui lòng liên hệ <a href="https://www.facebook.com/profile.php?id=61561138291164" target="_blank" style="color: #007bff; text-decoration: underline;">Fanpage</a> để nhận quà.`,
+				icon: 'success',
+				title: 'Bạn nhận được 1 lượt quay!',
+				text: 'Quay ngay để rinh quà hấp dẫn từ ChiCha nha!',
 			}).then((result) => {
 				if (result.isConfirmed) {
-					window.location.reload();
+					setName('');
+					setRole('Chủ nuôi');
+					setPhone('');
+					setAddress('');
+
+					dispatch(setReward(reward));
+
+					onClose();
 				}
 			});
-			return;
+		} catch (error) {
+			console.error(error);
+			Swal.fire({
+				icon: 'error',
+				title: 'Lỗi!',
+				text: 'Đã xảy ra lỗi khi gửi thông tin. Vui lòng thử lại.',
+			});
+		} finally {
+			setIsSubmitting(false);
 		}
-
-		const reward = data.reward;
-
-		Swal.fire({
-			icon: 'success',
-			title: 'Bạn nhận được 1 lượt quay!',
-			text: 'Quay ngay để rinh quà hấp dẫn từ ChiCha nha!',
-		}).then((result) => {
-			if (result.isConfirmed) {
-				setName('');
-				setRole('Chủ nuôi');
-				setPhone('');
-				setAddress('');
-
-				dispatch(setReward(reward));
-
-				onClose();
-			}
-		});
 	};
 
 	return (
@@ -154,7 +167,12 @@ const Popup = ({ onClose }: PopupProps) => {
 
 					<button
 						type="submit"
-						className="bg-blue-500 text-white px-6 py-3 rounded-md w-full hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-200"
+						className={`bg-blue-500 text-white px-6 py-3 rounded-md w-full ${
+							isSubmitting
+								? 'opacity-50 cursor-not-allowed'
+								: 'hover:bg-blue-600'
+						} focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-200`}
+						disabled={isSubmitting}
 					>
 						Tham gia Vòng quay Phát lộc cùng ChiCha
 					</button>
