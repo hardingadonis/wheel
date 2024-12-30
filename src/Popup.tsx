@@ -94,7 +94,7 @@ const Popup = ({ onClose }: PopupProps) => {
 
 	return (
 		<div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
-			<div className="bg-white p-8 rounded-lg w-96 text-center shadow-lg transform transition-all duration-300 scale-95 hover:scale-100">
+			<div className="bg-white p-8 rounded-lg w-100 text-center shadow-lg transform transition-all duration-300 scale-95 hover:scale-100">
 				<h2 className="text-2xl font-semibold text-gray-800 mb-6">
 					Điền ngay - Quay liền
 				</h2>
