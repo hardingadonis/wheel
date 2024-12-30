@@ -76,8 +76,8 @@ const Popup = ({ onClose }: PopupProps) => {
 
 		Swal.fire({
 			icon: 'success',
-			title: 'Thành công!',
-			text: 'Bạn đã tham gia xé túi mù cùng ChiCha.',
+			title: 'Bạn nhận được 1 lượt quay!',
+			text: 'Quay ngay để rinh quà hấp dẫn từ ChiCha nha!',
 		}).then((result) => {
 			if (result.isConfirmed) {
 				setName('');
@@ -156,7 +156,7 @@ const Popup = ({ onClose }: PopupProps) => {
 						type="submit"
 						className="bg-blue-500 text-white px-6 py-3 rounded-md w-full hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-200"
 					>
-						Tham gia xé túi mù cùng ChiCha
+						Tham gia Vòng quay Phát lộc cùng ChiCha
 					</button>
 				</form>
 			</div>
